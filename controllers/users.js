@@ -1,10 +1,21 @@
 const { validationResult } = require('express-validator');
+const User = require('../models/user')
 
 exports.getUsers = (req, res, next) => {
-    res.status(200).json({
-        name: "Tomi",
-        age: 34
-    });
+    User.fetchAll()
+    .then(([rows, field]) => {
+        if (!rows || rows.length === 0) {
+          return res.status(404).json({ message: 'Database is empty' });
+        }
+        res.status(200).json({
+            message: '',
+            rows
+        })
+    })
+    .catch(err => {
+        console.error(err);
+        res.status(500).json({ message: 'An error occurred' });
+      });
 };
 exports.createUser = (req,res,next) => {
     const errors = validationResult(req);

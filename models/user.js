@@ -15,12 +15,13 @@ module.exports = class User {
     
     save(){
         /* must be modified
+        INSERT INTO `my_mini_nodejs_app_db_github`.`users` (`first_name`, `last_name`, `date_of_birth`, `e_mail`, `password`, `created_at`, `updated_at`) VALUES ('Thomas', 'Db', '1981.01.01', 'tom@tom.hu', 'teszt', '2025.06.28', '2025.06.28');
         return db.execute('INSERT INTO person (name, date_of_birth) VALUES (?, ?)',
             [this.name, this.date_of_birth]);
             */
     }   
     static fetchAll() {
-        
+        return db.execute('SELECT first_name FROM users');
 
     }
     static findById(id) {
