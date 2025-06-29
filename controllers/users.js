@@ -24,14 +24,24 @@ exports.createUser = (req,res,next) => {
             errors: errors.array()
         })
     }
-    const name = req.body.name;
-    const age = req.body.age;
-
-    // create user in db
-    res.status(201).json(
-        {
-            message: 'User created succesfully',
-            user:{ id: new Date().toISOString(), name: name, age:age}
-        }
-    )
+    const first_name = req.body.first_name; 
+    const last_name = req.body.last_name; 
+    const date_of_birth = req.body.date_of_birth; 
+    const e_mail = req.body.e_mail; 
+    const password = req.body.password;
+    const created_at = Date.now();
+    const updated_at = Date.now();
+    const user = new User(first_name,last_name,date_of_birth,e_mail,password,created_at,updated_at);
+    user
+    .save()
+    .then( result =>{
+        res.status(201).json({
+        message: 'User is Created',
+        user: result
+    })
+    })
+    .catch(err => {
+        console.log()
+    });
+    /* to do test above */
 }
