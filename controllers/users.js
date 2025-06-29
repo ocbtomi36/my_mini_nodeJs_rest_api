@@ -29,9 +29,10 @@ exports.createUser = (req,res,next) => {
     const date_of_birth = req.body.date_of_birth; 
     const e_mail = req.body.e_mail; 
     const password = req.body.password;
-    const created_at = Date.now();
-    const updated_at = Date.now();
-    const user = new User(first_name,last_name,date_of_birth,e_mail,password,created_at,updated_at);
+    /*
+    const created_at = new Date().toISOString();
+    const updated_at = created_at;*/
+    const user = new User(first_name,last_name,date_of_birth,e_mail,password);
     user
     .save()
     .then( result =>{

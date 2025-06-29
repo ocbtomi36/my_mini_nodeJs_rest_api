@@ -12,8 +12,8 @@ router.get('/users', userController.getUsers);
 
 //POST route for create a new user
 router.post('/user',[
-    body('name').trim().isLength({min:1,max:45}),
-    body('age').isNumeric()
+    //body('name').trim().isLength({min:1,max:45}),
+    //body('age').isNumeric()
 
 ],userController.createUser);
 
