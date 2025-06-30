@@ -18,31 +18,29 @@ exports.getUsers = (req, res, next) => {
       });
 };
 exports.createUser = (req,res,next) => {
+    
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         return res.status(422).json({message: 'Validation failed.',
             errors: errors.array()
         })
     }
+    
     const first_name = req.body.first_name; 
     const last_name = req.body.last_name; 
     const date_of_birth = req.body.date_of_birth; 
     const e_mail = req.body.e_mail; 
     const password = req.body.password;
-    /*
-    const created_at = new Date().toISOString();
-    const updated_at = created_at;*/
+    
     const user = new User(first_name,last_name,date_of_birth,e_mail,password);
     user
     .save()
-    .then( result =>{
+    .then( () =>{
         res.status(201).json({
         message: 'User is Created',
-        user: result
     })
     })
     .catch(err => {
         console.log()
     });
-    /* to do test above */
 }

@@ -15,5 +15,11 @@ app.use((req,res,next) => {
 })
 */
 app.use('/user',userRoutes);
-
+/*
+opcionális
+let datum = new Date().toLocaleDateString().replaceAll(' ','').substring(0,10);
+let time = new Date().toLocaleTimeString();
+let formatedDate = datum + ' ' + time
+console.log(formatedDate);
+*/
 app.listen(3000);

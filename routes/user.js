@@ -11,9 +11,15 @@ const router = express.Router();
 router.get('/users', userController.getUsers);
 
 //POST route for create a new user
+// Here validate an input data
 router.post('/user',[
-    //body('name').trim().isLength({min:1,max:45}),
-    //body('age').isNumeric()
+    // check if string contains whitespaces and spec chars
+    body('first_name').trim().isLength({min:1,max:20}).withMessage('length of first name is incorrect'),
+    body('last_name').trim().isLength({min:1,max:20}).withMessage('length of last name is incorrect'),
+    body('date_of_birth').trim().isLength({min:10,max:10}).withMessage('length of date of birth is incorrect'), //database format must be date then i get back YYYY-MM-DD string
+    body('date_of_birth').trim().isDate('YYYY-MM-DD').withMessage("this field does't match with 'YYYY-MM-DD' format"),
+    body('e_mail').trim().isEmail().withMessage("this field must be an valid e-mail format"),
+    body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
 
 ],userController.createUser);
 
