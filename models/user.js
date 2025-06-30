@@ -19,7 +19,7 @@ module.exports = class User {
 
     }
     static findById(id) {
-
+        
     }
     /*
     static findItem(title) {

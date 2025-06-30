@@ -30,8 +30,7 @@ exports.createUser = (req,res,next) => {
     const last_name = req.body.last_name; 
     const date_of_birth = req.body.date_of_birth; 
     const e_mail = req.body.e_mail; 
-    const password = req.body.password;
-    
+    const password = req.body.password.toLowerCase();
     const user = new User(first_name,last_name,date_of_birth,e_mail,password);
     user
     .save()
