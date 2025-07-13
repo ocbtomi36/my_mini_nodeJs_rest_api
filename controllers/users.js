@@ -1,8 +1,9 @@
 const { validationResult } = require('express-validator');
-const User = require('../models/user')
+const User = require('../models/user');
+//const { post } = require('../routes/user');
 
 exports.getUsers = (req, res, next) => {
-    User.fetchAll()
+    User.fetchAllUsers()
     .then(([rows, field]) => {
         if (!rows || rows.length === 0) {
           return res.status(404).json({ message: 'Database is empty' });
@@ -17,6 +18,24 @@ exports.getUsers = (req, res, next) => {
         res.status(500).json({ message: 'An error occurred' });
       });
 };
+
+exports.getUser = (req,res,next) => {
+    const userId = req.params.userId;
+    User.findUserById(userId)
+    .then(([user]) => {
+        if(!user || user.length === 0) {
+            return res.status(404).json({ message: 'There is no user with that id' });
+        } 
+        res.status(200).json(user);
+    })
+    .catch(err => {
+        if(!err.statusCode) {
+            err.statusCode = 500;
+        } 
+        next(err);
+      });
+};
+
 exports.createUser = (req,res,next) => {
     
     const errors = validationResult(req);

@@ -22,4 +22,5 @@ let time = new Date().toLocaleTimeString();
 let formatedDate = datum + ' ' + time
 console.log(formatedDate);
 */
+console.log("Hello")
 app.listen(3000);

@@ -14,13 +14,14 @@ module.exports = class User {
         return db.execute('INSERT INTO users (first_name, last_name, date_of_birth, e_mail, password) VALUES (?, ?, ?, ?, ?)',
             [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password]);
     }   
-    static fetchAll() {
+    static fetchAllUsers() {
         return db.execute('SELECT first_name FROM users');
 
     }
-    static findById(id) {
-        
+    static findUserById(userId) {
+        return db.execute('SELECT first_name, last_name, date_of_birth, e_mail FROM users where users.iduser = ?', [userId]);
     }
+        
     /*
     static findItem(title) {
        return db.execute('SELECT id FROM products WHERE title = ?', [title])
