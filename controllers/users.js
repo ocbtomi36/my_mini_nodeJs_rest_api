@@ -35,7 +35,25 @@ exports.getUser = (req,res,next) => {
         next(err);
       });
 };
-
+exports.deleteUserById = (req,res,next) => {
+    const userId = req.params.userId;
+    User.findUserById(userId)
+    .then(([user]) => {
+        if(!user || user.length === 0) {
+            return res.status(404).json({ message: 'There is no user with that id' });
+        } 
+        return User.deleteUserById(userId);
+    })
+    .then(() => {
+        res.status(200).json({ message: 'User deleted succesfully'});
+    })
+    .catch(err => {
+        if(!err.statusCode) {
+            err.statusCode = 500;
+        } 
+        next(err);
+      });
+}
 exports.createUser = (req,res,next) => {
     
     const errors = validationResult(req);

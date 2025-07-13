@@ -21,7 +21,9 @@ module.exports = class User {
     static findUserById(userId) {
         return db.execute('SELECT first_name, last_name, date_of_birth, e_mail FROM users where users.iduser = ?', [userId]);
     }
-        
+    static deleteUserById(userId) {
+        return db.execute('DELETE from users where users.iduser = ?', [userId]);
+    }
     /*
     static findItem(title) {
        return db.execute('SELECT id FROM products WHERE title = ?', [title])

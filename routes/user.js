@@ -26,6 +26,6 @@ router.post('/user',[
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
 
 ],userController.createUser);
-
+router.delete('/user/:userId', userController.deleteUserById)
 
 module.exports = router;
