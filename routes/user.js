@@ -36,7 +36,6 @@ router.put('/user/:userId',[
     body('date_of_birth').trim().isDate('YYYY-MM-DD').withMessage("this field does't match with 'YYYY-MM-DD' format"),
     body('e_mail').trim().isEmail().normalizeEmail().withMessage("this field must be an valid e-mail format"),
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
-
 ],userController.updateUserById);
 
 module.exports = router;
