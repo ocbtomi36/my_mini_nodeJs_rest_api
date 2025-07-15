@@ -15,7 +15,7 @@ module.exports = class User {
             [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password]);
     }   
     static fetchAllUsers() {
-        return db.execute('SELECT first_name FROM users');
+        return db.execute('SELECT first_name, last_name, date_of_birth FROM users');
 
     }
     static findUserById(userId) {
@@ -26,7 +26,7 @@ module.exports = class User {
     }
     
     updateUserById(userId) {
-       return db.execute('UPDATE users SET first_name = ?, last_name = ?, date_of_birth = ?, e_mail = ?, password = ? WHERE id = ?', [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password,userId])
+       return db.execute('UPDATE users SET first_name = ?, last_name = ?, date_of_birth = ?, e_mail = ?, password = ? WHERE users.iduser = ?', [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password,userId])
     }
 
 };
