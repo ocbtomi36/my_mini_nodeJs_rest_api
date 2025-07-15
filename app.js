@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const userRoutes = require('./routes/user');
-const db = require('./database/database')
+const carRoutes = require('./routes/car')
+
 const app = express();
 
 app.use(bodyParser.json()); // this is for application/json
@@ -15,6 +16,8 @@ app.use((req,res,next) => {
 })
 
 app.use('/user',userRoutes);
+app.use('/car',carRoutes);
+
 /*
 opcionális
 let datum = new Date().toLocaleDateString().replaceAll(' ','').substring(0,10);
