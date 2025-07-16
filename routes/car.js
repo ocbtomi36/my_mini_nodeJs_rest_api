@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.get('/cars',carController.getCars);
 
-router.get('/:carId');
+router.get('/:carId',carController.getCar);
 
 module.exports = router

@@ -12,6 +12,6 @@ module.exports = class Car {
         return db.execute('SELECT type_of_car FROM my_mini_nodejs_app_db_github.cars');
     }
     static findCarById(carId){
-
+        return db.execute(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
     }
 };
