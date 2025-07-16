@@ -8,3 +8,5 @@ const carController = require('../controllers/cars');
 const router = express.Router();
 
 router.get('/cars',carController.getCars);
+
+module.exports = router
