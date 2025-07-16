@@ -79,8 +79,7 @@ exports.createUser = (req,res,next) => {
     .catch(err => {
         console.log()
     });
-}
-// ez is problematikus a többszöri cucc miatt
+} 
 exports.updateUserById = (req,res,next) => {
     const userId = req.params.userId;
     User.findUserById(userId)
