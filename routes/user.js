@@ -12,7 +12,7 @@ router.get('/users', userController.getUsers);
 
 // GET route is /user/1 for example
 
-router.get('/user/:userId',userController.getUser);
+router.get('/:userId',userController.getUser);
 
 //POST route for create a new user
 // Here validate an input data
@@ -27,8 +27,8 @@ router.post('/user',[
 
 ],userController.createUser);
 
-router.delete('/user/:userId', userController.deleteUserById);
-router.put('/user/:userId',[
+router.delete('/:userId', userController.deleteUserById);
+router.put('/:userId',[
     // check if string contains whitespaces and spec chars ?
     body('first_name').trim().isLength({min:1,max:20}).withMessage('length of first name is incorrect'),
     body('last_name').trim().isLength({min:1,max:20}).withMessage('length of last name is incorrect'),

@@ -9,4 +9,6 @@ const router = express.Router();
 
 router.get('/cars',carController.getCars);
 
+router.get('/:carId');
+
 module.exports = router
