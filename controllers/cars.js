@@ -21,13 +21,31 @@ exports.getCars = (req, res, next) => {
 
 exports.getCar = (req,res,next) => {
   const carId = req.params.carId;
-  console.log(carId)
   Car.findCarById(carId)
   .then(([car]) => {
     if(!car || car.length === 0) {
       return res.status(404).json({message: 'There is no car with that id'})
     }
     res.status(200).json(car);
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({message: 'An error occured'});
+  });
+}
+exports.createCar = (req,res,next) => {
+  const carName = req.body.type_of_car;
+  Car.findCarBytypeOfCar(carName)
+  .then(([car]) => {
+    if(car.length !== 0) {
+      res.json({ message: 'Car field must be unique' });
+      return;
+    } else {
+      const type_of_car = req.body.type_of_car;
+      const savedcar = new Car(type_of_car);
+      savedcar.save().then(() => res.status(201).json({ message: 'Car is created'}));
+      
+    }
   })
   .catch(err => {
     console.error(err);

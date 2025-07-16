@@ -80,30 +80,32 @@ exports.createUser = (req,res,next) => {
         console.log()
     });
 }
+// ez is problematikus a többszöri cucc miatt
 exports.updateUserById = (req,res,next) => {
     const userId = req.params.userId;
     User.findUserById(userId)
     .then(([user]) => {
+        const errors = validationResult(req);
         if(!user || user.length === 0) {
             return res.status(404).json({ message: 'There is no user with that id' });
+        } else if(!errors.isEmpty()){
+            return res.status(422).json({message: 'Validation Failed', errors: errors.array()})
+        } else {
+            const first_name = req.body.first_name; 
+            const last_name = req.body.last_name; 
+            const date_of_birth = req.body.date_of_birth; 
+            const e_mail = req.body.e_mail; 
+            const password = req.body.password.toLowerCase();
+            const updatedUser = new User(first_name,last_name,date_of_birth,e_mail,password);
+            updatedUser.updateUserById(userId);
+            return res.status(200).json({
+        message: 'User is Updated',})
         }
-        const first_name = req.body.first_name; 
-        const last_name = req.body.last_name; 
-        const date_of_birth = req.body.date_of_birth; 
-        const e_mail = req.body.e_mail; 
-        const password = req.body.password.toLowerCase();
-        const updatedUser = new User(first_name,last_name,date_of_birth,e_mail,password);
-        return updatedUser.updateUserById(userId);
-    })
-    .then(() =>{
-        res.status(200).json({
-        message: 'User is Updated',
-    })
     })
     .catch(err => {
         if(!err.statusCode) {
             err.statusCode = 500;
-        } 
+        }
         next(err);
-    });
+    })
 }
