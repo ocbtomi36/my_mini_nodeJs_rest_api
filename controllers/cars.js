@@ -33,13 +33,19 @@ exports.getCar = (req,res,next) => {
     res.status(500).json({message: 'An error occured'});
   });
 }
+// a routerbe a middleware-ben
 exports.createCar = (req,res,next) => {
   const carName = req.body.type_of_car;
+  const errors = validationResult(req);
   Car.findCarBytypeOfCar(carName)
   .then(([car]) => {
     if(car.length !== 0) {
-      res.json({ message: 'Car field must be unique' });
+      res.status(422).json({ message: 'Car field must be unique' });
       return;
+    } else if(!errors.isEmpty()){
+      return res.status(422).json({message: 'Validation failed.',
+            errors: errors.array()
+        })
     } else {
       const type_of_car = req.body.type_of_car;
       const savedcar = new Car(type_of_car);
@@ -51,5 +57,8 @@ exports.createCar = (req,res,next) => {
     console.error(err);
     res.status(500).json({message: 'An error occured'});
   });
+}
+exports.updateCar = (req,res,next) => {
+
 }
 

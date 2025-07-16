@@ -99,7 +99,7 @@ exports.updateUserById = (req,res,next) => {
             const updatedUser = new User(first_name,last_name,date_of_birth,e_mail,password);
             updatedUser.updateUserById(userId);
             return res.status(200).json({
-        message: 'User is Updated',})
+            message: 'User is Updated',})
         }
     })
     .catch(err => {
