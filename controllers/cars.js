@@ -22,18 +22,22 @@ exports.getCars = (req, res, next) => {
 /**
  * Gets one car by the existing id
  */
-exports.getCar = (req,res,next) => {
+exports.getCar = async (req,res,next) => {
   const carId = req.params.carId;
-  Car.findCarById(carId)
-  .then(([car]) => {
-    if(!car || car.length === 0) {
-      return res.status(404).json({message: 'There is no car with that id'})
+  try {
+    const queryResult = await Car.findCarById(carId);
+    if(queryResult === 0){
+      // vagy visszatér 0-val így nincs az id az adatbázisban
+      res.status(422).json({ message: ' There is no data with that id'})
+      return;
+    } else {
+      // vagy visszatér adattal, amit visszaküldök
+      const type_of_car = queryResult.type_of_car;
+      res.status(200).json({ message: ' Query success', data: {type_of_car}})
     }
-    res.status(200).json(car);
-  })
-  .catch(err => {
-    res.status(500).json({message: 'An error occured'});
-  });
+  } catch (error) {
+    res.status(500).json({ message: 'An error occured'})
+  }
 }
 /**
  * Create a new car 
@@ -56,7 +60,7 @@ exports.createCar = (req,res,next) => {
       savedcar.save().then(() => res.status(201).json({ message: 'Car is created'}));  
     }
   })
-  .catch(err => {
+  . catch (error => {
     res.status(500).json({message: 'An error occured'});
   });
 }

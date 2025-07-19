@@ -11,26 +11,24 @@ module.exports = class Car {
     static fetchAllCars(){
         return db.execute('SELECT type_of_car FROM my_mini_nodejs_app_db_github.cars');
     }
-    static findCarById(carId){
-        return db.execute(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
-    }
-    // átírom asyc awaitre, mert kell az adatbázisból, hogy milyen autót tartalmaz.
-    async asyncFindCarBytypeOfCar(car){
-        try{
-        const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where type_of_car = ?',[car])
-        return row.length > 0 ? row[0] : 0;
-        } catch (err) {
-            throw new Error('Error in database query');
-        }
-    }
-    async asyncFindCarById(carId){
-        try{
+    static async findCarById(carId){
         const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
         return row.length > 0 ? row[0] : 0;
+    }
+    /**
+     *  static findCarById(carId){
+        return db.execute(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
+    }
+     */
+    // átírom asyc awaitre, mert kell az adatbázisból, hogy milyen autót tartalmaz.
+    async asyncFindCarBytypeOfCar(car){
+        const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where type_of_car = ?',[car])
+        return row.length > 0 ? row[0] : 0;
         
-        } catch (err) {
-            throw new Error('Error in database query')
-        }
+    }
+    async asyncFindCarById(carId){
+        const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
+        return row.length > 0 ? row[0] : 0;
     }
 
     
