@@ -35,7 +35,9 @@ exports.getCar = (req,res,next) => {
     res.status(500).json({message: 'An error occured'});
   });
 }
-// Create a new car  
+/**
+ * Create a new car 
+ */  
 exports.createCar = (req,res,next) => {
   const carName = req.body.type_of_car;
   const errors = validationResult(req);
@@ -58,6 +60,9 @@ exports.createCar = (req,res,next) => {
     res.status(500).json({message: 'An error occured'});
   });
 }
+/**
+ * Update a car 
+ */
 exports.updateCar = async (req,res,next) => {
 const paramId = req.params.carId;
 const incommingTypeOfCar = req.body.type_of_car;
