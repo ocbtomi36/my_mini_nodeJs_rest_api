@@ -58,42 +58,40 @@ exports.createCar = (req,res,next) => {
     res.status(500).json({message: 'An error occured'});
   });
 }
-/**
- * update one car by the id
- */
-/** 
- * Hogyan updatelünk ? 
- * 1. Leellenörizzük, hogy a bejövő adatban van e hiba. Ha igen hiba akkor hibával térek vissza.
- * 2. Leellenőrizzük, hogy a bejövő auto, ami egyedi létezik e az adatbázisban, ha igen akkor mi az azonosítója.
- * Ha megegyezzik ami bejön pl 1 és 1 akkor nincs gond lehet updatelni.
- * Ha nem hiba.
- * Ha még nem szerepel az adatbázisban és jó a formátum k
-*/
 exports.updateCar = async (req,res,next) => {
 const paramId = req.params.carId;
-const incommingCarType = req.body.type_of_car;
+const incommingTypeOfCar = req.body.type_of_car;
 const errors = validationResult(req);
 const auto = new Car();
   try {
     if(!errors.isEmpty()){
       return res.status(422).json({message: 'Validation failed.',
-            errors: errors.array() // a bejövő adatok validálása, tehát .
+            errors: errors.array() 
     })}
     const isValidId = await auto.asyncFindCarById(paramId);
-    console.log(isValidId)
     if(isValidId === 0){
       return res.status(422).json({message: 'Validation failed, there is no data with that id'})
     }
-    const carDatasFromDb = await auto.asyncFindCarBytypeOfCar(incommingCarType);
-    const dataIdCars = carDatasFromDb.idcars.toString(); // adatbázisból
-    const dataTypeOfCar = carDatasFromDb.type_of_car; // adatbázisból
-    if(dataIdCars !== paramId && incommingCarType == dataTypeOfCar){
-      // itt azt kaptuk vissza, hogy az auto létezik az adatbázisban, de nem azzal az id-val amit beküldtek. Ez elutasítás
-      //Unique megszoriítás
-      res.status(422).json({ message: 'This type of car is already exists in db with different id' });
-      return;
+    const isCarExists = await auto.asyncFindCarBytypeOfCar(incommingTypeOfCar);
+    if(isCarExists === 0){
+      const updateTypeOfCar = incommingTypeOfCar;
+      const updateCar = new Car(updateTypeOfCar);
+      await updateCar.asyncUpdateCarById(paramId);
+      return res.status(200).json({ message: 'Car updated successfully' });
+    } else {
+      console.log(isCarExists);
+      const updateCarId = isCarExists.idcars;
+      const updateTypeOfCar = isCarExists.type_of_car;
+      console.log(updateCarId + " " + updateTypeOfCar);
+      if(updateCarId == paramId && updateTypeOfCar == incommingTypeOfCar){
+        const updateCar = new Car(updateTypeOfCar);
+        await updateCar.asyncUpdateCarById(paramId);
+        return res.status(200).json({ message: 'Car updated successfully' });
+      } else {
+        return res.status(422).json({message: 'Validation failed, car is exists in database with different id'})
+      }
     }
   } catch (error) {
-    res.status(500).json({message: 'An error occured'});
-  } 
+    res.status(500).json({message: 'There is an error during update'});
+  }
 }

@@ -34,7 +34,7 @@ module.exports = class Car {
     }
 
     
-    updateCarById(carId){
-        return db.execute('UPDATE users SET type_of_car = ? where idcars = ?',[this.type_of_car,carId])
+    async asyncUpdateCarById(carId){
+            return await db.execute('UPDATE cars SET type_of_car = ? where idcars = ?',[this.type_of_car,carId])
     }
 };
