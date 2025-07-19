@@ -9,11 +9,11 @@ exports.getCars = async (req, res, next) => {
       const queryResult = await Car.asyncFetchAllCars();
       console.log(queryResult)
       if(queryResult === 0){
-      // vagy visszatér 0-val így adatbázis üres
+      
       res.status(404).json({ message: 'There is no data in database'})
       return;
     } else {
-      // vagy visszatér adattal, mert az adatbázis nem üres
+      
       res.status(200).json({ message: ' Query success', data: queryResult})
       return;
     }
@@ -29,11 +29,11 @@ exports.getCar = async (req,res,next) => {
   try {
     const queryResult = await Car.asyncFindCarById(carId);
     if(queryResult === 0){
-      // vagy visszatér 0-val így nincs az id az adatbázisban
+      
       res.status(422).json({ message: ' There is no data with that id'})
       return;
     } else {
-      // vagy visszatér adattal, amit visszaküldök
+      
       const type_of_car = queryResult.type_of_car;
       res.status(200).json({ message: ' Query success', data: {type_of_car}})
       return;
@@ -44,28 +44,23 @@ exports.getCar = async (req,res,next) => {
   }
 }
 /**
- * Create a new car refaktorálni
+ * Create a new car 
  */  
 exports.createCar = async(req,res,next) => {
-  /**
-   * Hogyan tudok egy új adatot beszúrni az adatbázisba.
-   * 1.Bejövő adatok validálása ha ok tovább ha nem akkor elutasít
-   * 2.Id-t nem kell,mert nincs
-   * 3.Uniqe megszorítást ellenőrizni, ha ok beszúr ha nem akkor elutasít
-   */
+  
   const errors = validationResult(req);
   const car = new Car();
   try {
-    // itt validálom a bejövő imputot, ha hibás elutasít, ha nem akkor mehet tovább
+    
     if(!errors.isEmpty()){
       return res.status(422).json({message: 'Validation failed.',
             errors: errors.array() 
     })}
-    // unique megszorítás ellenőrzése, hogy létezik e ?
+    
     const incommingTypeOfCar = req.body.type_of_car;
     const isCarExists = await car.asyncFindCarBytypeOfCar(incommingTypeOfCar);
     if(isCarExists === 0){
-      // nem létezik a kocsi, így beszúrható
+      
       const insertCar = new Car(incommingTypeOfCar);
       await insertCar.save();
       return res.status(200).json({message: 'Inserting succesful'});
