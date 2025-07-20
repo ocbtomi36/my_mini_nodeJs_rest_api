@@ -10,8 +10,8 @@ module.exports = class User {
         this.e_mail = e_mail, 
         this.password = password
     }  
-    save(){
-        return db.execute('INSERT INTO users (first_name, last_name, date_of_birth, e_mail, password) VALUES (?, ?, ?, ?, ?)',
+    async save(){
+         return await db.execute('INSERT INTO users (first_name, last_name, date_of_birth, e_mail, password) VALUES (?, ?, ?, ?, ?)',
             [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password]);
     }   
     static async asyncFetchAllUsers() {
