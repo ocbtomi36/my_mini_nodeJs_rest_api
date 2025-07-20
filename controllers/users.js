@@ -1,54 +1,46 @@
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
 //const { post } = require('../routes/user');
-/*
-exports.getUsers = (req, res, next) => {
-    User.fetchAllUsers()
-    .then(([rows, field]) => {
-        if (!rows || rows.length === 0) {
-          return res.status(404).json({ message: 'Database is empty' });
-        }
-        res.status(200).json({
-            message: 'Alles OK',
-            rows:rows
-        })
-    })
-    .catch(err => {
-        console.error(err);
-        res.status(500).json({ message: 'An error occurred' });
-      });
-};
-*/
+
 /**
  * Gets all users from the database
  */
 exports.getUsers = async (req, res, next) => {
-    const queryResult = await User.asyncFetchAllUsers();
-    if(queryResult === 0) {
-        return res.status(404).json({ message: 'Database is empty' });
-    } else {
-        res.status(200).json({
-            message: 'Query is success',
-            data: queryResult})
+    try{
+        const queryResult = await User.asyncFetchAllUsers();
+        if(queryResult === 0) {
+            return res.status(404).json({ message: 'Database is empty' });
+        } else {
+            res.status(200).json({
+                message: 'Query is success',
+                data: queryResult})
+            return;
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
     }
 }
-
-exports.getUser = (req,res,next) => {
-    const userId = req.params.userId;
-    User.findUserById(userId)
-    .then(([user]) => {
-        if(!user || user.length === 0) {
-            return res.status(404).json({ message: 'There is no user with that id' });
-        } 
-        res.status(200).json(user);
-    })
-    .catch(err => {
-        if(!err.statusCode) {
-            err.statusCode = 500;
-        } 
-        next(err);
-      });
-};
+/**
+ * Gets one users from the database if id exists.
+ */
+exports.getUser = async (req,res,next) => {
+    try{
+        const incommingId = req.params.userId;
+        const queryResult = await User.asyncFindUserById(incommingId);
+        if(queryResult === 0) {
+            return res.status(422).json({ message: 'There is no data with that id' });
+        } else {
+            res.status(200).json({
+                message: 'Query is success',
+                data: queryResult})
+            return;
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
+}
 exports.deleteUserById = (req,res,next) => {
     const userId = req.params.userId;
     User.findUserById(userId)

@@ -19,9 +19,10 @@ module.exports = class User {
         return  rows.length > 0 ? rows : 0;
 
     }
-    static findUserById(userId) {
+    static async asyncFindUserById(userId) {
         
-        return db.execute('SELECT first_name, last_name, date_of_birth, e_mail FROM users where users.iduser = ?', [userId]);
+        const [row] = await db.query('SELECT * FROM users where users.iduser = ?', [userId]);
+        return row.length > 0 ? row : 0;
     }
     static deleteUserById(userId) {
         return db.execute('DELETE from users where users.iduser = ?', [userId]);
