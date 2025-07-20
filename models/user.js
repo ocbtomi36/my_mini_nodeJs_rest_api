@@ -15,7 +15,7 @@ module.exports = class User {
             [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password]);
     }   
     static async asyncFetchAllUsers() {
-        const [rows] = await db.query('SELECT first_name, last_name, date_of_birth FROM users');
+        const [rows] = await db.query('SELECT * FROM users');
         return  rows.length > 0 ? rows : 0;
 
     }
