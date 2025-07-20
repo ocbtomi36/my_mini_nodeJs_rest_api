@@ -60,8 +60,10 @@ exports.deleteUserById = (req,res,next) => {
         next(err);
       });
 }
-exports.createUser = (req,res,next) => {
-    
+/**
+ * Create a user by incomming data
+*/
+exports.createUser = async(req,res,next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()) {
         return res.status(422).json({message: 'Validation failed.',
@@ -69,22 +71,30 @@ exports.createUser = (req,res,next) => {
         })
     }
     
-    const first_name = req.body.first_name; 
-    const last_name = req.body.last_name; 
-    const date_of_birth = req.body.date_of_birth; 
-    const e_mail = req.body.e_mail; 
-    const password = req.body.password.toLowerCase();
-    const user = new User(first_name,last_name,date_of_birth,e_mail,password);
-    user
-    .save()
-    .then( () =>{
-        res.status(201).json({
-        message: 'User is Created',
-    })
-    })
-    .catch(err => {
-        console.log()
-    });
+    try {
+        const first_name = req.body.first_name; 
+        const last_name = req.body.last_name; 
+        const date_of_birth = req.body.date_of_birth; 
+        const e_mail = req.body.e_mail; 
+        const password = req.body.password.toLowerCase();
+        const isEmailExists = await User.asyncEamilExists(e_mail);
+        if (isEmailExists !== 0) {
+            return res.status(422).json({ message: 'Email is alerady exists' });
+        }
+        const isPasswdExists = await User.asyncPasswordExists(password);
+        if (isPasswdExists !== 0) {
+            return res.status(422).json({ message: 'Password is alerady exists' });
+        } else {
+        const insertingUser = new User(first_name,last_name,date_of_birth,e_mail,password);
+        await insertingUser.save();
+                res.status(201).json({
+                message: 'User is Created'})
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
+    
 } 
 exports.updateUserById = (req,res,next) => {
     const userId = req.params.userId;
