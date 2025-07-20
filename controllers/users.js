@@ -1,7 +1,7 @@
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
 //const { post } = require('../routes/user');
-
+/*
 exports.getUsers = (req, res, next) => {
     User.fetchAllUsers()
     .then(([rows, field]) => {
@@ -18,6 +18,20 @@ exports.getUsers = (req, res, next) => {
         res.status(500).json({ message: 'An error occurred' });
       });
 };
+*/
+/**
+ * Gets all users from the database
+ */
+exports.getUsers = async (req, res, next) => {
+    const queryResult = await User.asyncFetchAllUsers();
+    if(queryResult === 0) {
+        return res.status(404).json({ message: 'Database is empty' });
+    } else {
+        res.status(200).json({
+            message: 'Query is success',
+            data: queryResult})
+    }
+}
 
 exports.getUser = (req,res,next) => {
     const userId = req.params.userId;

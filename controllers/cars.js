@@ -7,15 +7,14 @@ const Car = require('../models/cars');
 exports.getCars = async (req, res, next) => {
     try {
       const queryResult = await Car.asyncFetchAllCars();
-      console.log(queryResult)
       if(queryResult === 0){
       
-      res.status(404).json({ message: 'There is no data in database'})
-      return;
+        res.status(404).json({ message: 'There is no data in database'})
+        return;
     } else {
       
-      res.status(200).json({ message: ' Query success', data: queryResult})
-      return;
+        res.status(200).json({ message: ' Query success', data: queryResult})
+        return;
     }
     } catch (error) {
       
