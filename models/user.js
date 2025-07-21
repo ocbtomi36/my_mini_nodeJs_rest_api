@@ -24,8 +24,8 @@ module.exports = class User {
         const [row] = await db.query('SELECT * FROM users where users.iduser = ?', [userId]);
         return row.length > 0 ? row : 0;
     }
-    static deleteUserById(userId) {
-        return db.execute('DELETE from users where users.iduser = ?', [userId]);
+    static async asyncDeleteUserById(userId) {
+        return await db.execute('DELETE from users where users.iduser = ?', [userId]);
     }
     
     updateUserById(userId) {
