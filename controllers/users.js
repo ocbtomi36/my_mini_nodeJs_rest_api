@@ -41,4 +41,65 @@ exports.getUser = async (req,res,next) => {
         return;
     }
 }
+/**
+ * Create a user by incomming data
+*/
+exports.createUser = async(req,res,next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(422).json({message: 'Validation failed.',
+            errors: errors.array()
+        })
+    }
+    
+    try {
+        const first_name = req.body.first_name; 
+        const last_name = req.body.last_name; 
+        const date_of_birth = req.body.date_of_birth; 
+        const e_mail = req.body.e_mail; 
+        const password = req.body.password;
+        const foundEmail = await User.EamilExists(e_mail);
+        if (foundEmail !== null) {
+            return res.status(422).json({ message: 'Email is alerady exists' });
+        }
+        const foundPasswd = await User.PasswordExists(password);
+        if (foundPasswd !== null) {
+            return res.status(422).json({ message: 'Password is alerady exists' });
+        } else {
+        const insertingUser = new User(first_name,last_name,date_of_birth,e_mail,password);
+        await insertingUser.save();
+                res.status(201).json({
+                message: 'User is Created'})
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
+    
+} 
+exports.updateUserById = async (req,res,next) => {
+    const userId = req.params.userId;
+    const foundedUser = await User.FindUserById(userId);
+    if(foundedUser === null){
+        return res.status(422).json({ message: 'There is no data with that id' });
+    }
+    const foundedEmail = foundedUser.e_mail; //jo a bejövő id-hez ez az email tartozik
+    const foundedPassword = foundedUser.password; //jo a bejövő id-hez ez a password tartozik
+    // bejövő adat validálás
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        return res.status(422).json({message: 'Validation failed.',
+            errors: errors.array()
+        })
+    }
+    // betöltjük a bejövő adatokat
+    const first_name = req.body.first_name; 
+    const last_name = req.body.last_name; 
+    const date_of_birth = req.body.date_of_birth; 
+    const e_mail = req.body.e_mail; 
+    const password = req.body.password;
+    // félreteszem innen. A logikát később
+    console.log(foundedEmail, foundedPassword);
+
+}
 

@@ -22,7 +22,7 @@ module.exports = class User {
     static async FindUserById(userId) {
         
         const [row] = await db.query('SELECT * FROM users where users.iduser = ?', [userId]);
-        return row.length > 0 ? row : null;
+        return row.length > 0 ? row[0] : null;
     }
     static async DeleteUserById(userId) {
         return await db.execute('DELETE from users where users.iduser = ?', [userId]);
