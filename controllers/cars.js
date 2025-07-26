@@ -115,3 +115,22 @@ exports.updateCar = async (req,res,next) => {
     return;
   }
 }
+/*
+* Delete one car if id exists
+*/
+exports.deleteCarById = async (req,res,next) => {
+    const incommingcarId = req.params.carId;
+    try {
+        const isValidId = await Car.FindTypeOfCarById(incommingcarId);
+        if(isValidId === 0){
+            return res.status(422).json({ message: 'There is no data with that id' });
+        } else {
+            await Car.DeleteUserById(incommingcarId);
+            return res.status(200).json({ message: 'Delete successful' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
+}
+

@@ -19,6 +19,10 @@ module.exports = class Car {
     async update(carId){
         return await db.execute('UPDATE cars SET type_of_car = ? where idcars = ?',[this.type_of_car,carId])
     }
+    static async DeleteUserById(userId) {
+            return await db.execute('DELETE from users where users.iduser = ?', [userId]);
+    }
+
     // Validation functions
     static async FindTypeOfCarByCar(car){
         const [row] = await db.query(' SELECT * FROM cars where type_of_car = ?',[car])
