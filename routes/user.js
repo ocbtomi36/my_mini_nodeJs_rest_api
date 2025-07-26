@@ -9,7 +9,7 @@ const router = express.Router();
 //GET route is /user/users
 
 router.get('/users', userController.getUsers);
-
+/*
 // GET route is /user/1 for example
 
 router.get('/:userId',userController.getUser);
@@ -37,5 +37,5 @@ router.put('/:userId',[
     body('e_mail').trim().isEmail().normalizeEmail().withMessage("this field must be an valid e-mail format"),
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
 ],userController.updateUserById);
-
+*/
 module.exports = router;

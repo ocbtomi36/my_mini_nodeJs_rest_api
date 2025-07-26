@@ -14,17 +14,17 @@ module.exports = class User {
          return await db.execute('INSERT INTO users (first_name, last_name, date_of_birth, e_mail, password) VALUES (?, ?, ?, ?, ?)',
             [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password]);
     }   
-    static async asyncFetchAllUsers() {
+    static async FetchAllUsers() {
         const [rows] = await db.query('SELECT * FROM users');
-        return  rows.length > 0 ? rows : 0;
+        return  rows.length > 0 ? rows : null;
 
     }
-    static async asyncFindUserById(userId) {
+    static async FindUserById(userId) {
         
         const [row] = await db.query('SELECT * FROM users where users.iduser = ?', [userId]);
-        return row.length > 0 ? row : 0;
+        return row.length > 0 ? row : null;
     }
-    static async asyncDeleteUserById(userId) {
+    static async DeleteUserById(userId) {
         return await db.execute('DELETE from users where users.iduser = ?', [userId]);
     }
     
@@ -32,22 +32,22 @@ module.exports = class User {
        return db.execute('UPDATE users SET first_name = ?, last_name = ?, date_of_birth = ?, e_mail = ?, password = ? WHERE users.iduser = ?', [this.first_name,this.last_name,this.date_of_birth,this.e_mail,this.password,userId])
     }
     /** 
-     * Addition queries for validation of email password
+     * Addition queries for validation of email and password
     */
     /**
      * Validate e-mail, if exists
      */
-    static async asyncEamilExists(incommingData) {
+    static async EamilExists(incommingData) {
         
         const [row] = await db.query('SELECT e_mail FROM users where e_mail = ?', [incommingData]);
-        return row.length > 0 ? row : 0;
+        return row.length > 0 ? row : null;
     }
     /**
      * Validate password, if exists
      */
-    static async asyncPasswordExists(incommingData) {
+    static async PasswordExists(incommingData) {
         
         const [row] = await db.query('SELECT password FROM users where password = ?', [incommingData]);
-        return row.length > 0 ? row : 0;
+        return row.length > 0 ? row : null;
     }
 };
