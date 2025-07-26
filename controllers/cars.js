@@ -1,18 +1,21 @@
 
 const { validationResult } = require('express-validator');
 const Car = require('../models/cars');
+
+function paramValidator(error) {
+  
+}
 /**
- * Gets all cars from the database
+ * Gets all cars from the database, ready
  */
 exports.getCars = async (req, res, next) => {
     try {
-      const queryResult = await Car.asyncFetchAllCars();
-      if(queryResult === 0){
+      const queryResult = await Car.FetchAllCars();
+      if(queryResult === null){
       
-        res.status(404).json({ message: 'There is no data in database'})
+        res.status(204).json({ message: 'There is no data in database'})
         return;
     } else {
-      
         res.status(200).json({ message: ' Query success', data: queryResult})
         return;
     }
@@ -22,13 +25,13 @@ exports.getCars = async (req, res, next) => {
     }
 };
 /**
- * Gets one car by the existing id
+ * Gets one car by the existing id, ready
  */
 exports.getCar = async (req,res,next) => {
   const carId = req.params.carId;
   try {
-    const queryResult = await Car.asyncFindCarById(carId);
-    if(queryResult === 0){
+    const queryResult = await Car.FindTypeOfCarById(carId);
+    if(queryResult === null){
       
       res.status(422).json({ message: ' There is no data with that id'})
       return;
@@ -47,69 +50,68 @@ exports.getCar = async (req,res,next) => {
  * Create a new car 
  */  
 exports.createCar = async(req,res,next) => {
-  
   const errors = validationResult(req);
+  const incommingTypeOfCar = req.body.type_of_car;
   const car = new Car();
   try {
-    
     if(!errors.isEmpty()){
       return res.status(422).json({message: 'Validation failed.',
             errors: errors.array() 
     })}
-    
-    const incommingTypeOfCar = req.body.type_of_car;
-    const isCarExists = await car.asyncFindCarBytypeOfCar(incommingTypeOfCar);
-    if(isCarExists === 0){
-      
+    const insertTypeOfCar = await Car.FindTypeOfCarByCar(incommingTypeOfCar);
+    if(insertTypeOfCar !== null){
+      res.status(422).json({ message: 'This data is already exist'})
+      return;
+    } else {
       const insertCar = new Car(incommingTypeOfCar);
       await insertCar.save();
       return res.status(200).json({message: 'Inserting succesful'});
-    } else {
-      return res.status(422).json({message: 'Inserting failed. Data is already exists in db'});
     }
   } catch (error) {
     res.status(500).json({message: 'There is an error during insert'});
     return;
   }
 }
-/**
- * Update a car 
- */
+// update a car by id
 exports.updateCar = async (req,res,next) => {
-const paramId = req.params.carId;
-const incommingTypeOfCar = req.body.type_of_car;
-const errors = validationResult(req);
-const auto = new Car();
+  const errors = validationResult(req);
+  const incommingTypeOfCar = req.body.type_of_car;
+  const incommingId = req.params.carId;
+  const car = new Car();
   try {
     if(!errors.isEmpty()){
       return res.status(422).json({message: 'Validation failed.',
             errors: errors.array() 
     })}
-    const isValidId = await auto.asyncFindCarById(paramId);
-    if(isValidId === 0){
-      return res.status(422).json({message: 'Validation failed, there is no data with that id'})
-    }
-    const isCarExists = await auto.asyncFindCarBytypeOfCar(incommingTypeOfCar);
-    if(isCarExists === 0){
-      const updateTypeOfCar = incommingTypeOfCar;
-      const updateCar = new Car(updateTypeOfCar);
-      await updateCar.asyncUpdateCarById(paramId);
-      return res.status(200).json({ message: 'Car updated successfully' });
-    } else {
-      console.log(isCarExists);
-      const updateCarId = isCarExists.idcars;
-      const updateTypeOfCar = isCarExists.type_of_car;
-      console.log(updateCarId + " " + updateTypeOfCar);
-      if(updateCarId == paramId && updateTypeOfCar == incommingTypeOfCar){
-        const updateCar = new Car(updateTypeOfCar);
-        await updateCar.asyncUpdateCarById(paramId);
-        return res.status(200).json({ message: 'Car updated successfully' });
+    const queryResult = await Car.FindTypeOfCarById(incommingId);
+    if(queryResult === null){
+      
+      res.status(422).json({ message: ' There is no data with that id'})
+      return;
+    } else { 
+      const queryTypeOfCar = await Car.FindTypeOfCarByCar(incommingTypeOfCar);
+      
+      if(queryTypeOfCar === null){
+        const updateCar = new Car(incommingTypeOfCar);
+        await updateCar.update(incommingId);
+        res.status(200).json({ message: 'Update successfull'})
+        return;
+      } 
+      const dbTypeOfCar = queryTypeOfCar.type_of_car; // adatbázis adat
+      const dbTypeOfCarId = queryTypeOfCar.idcars;
+      if ( incommingId != dbTypeOfCarId && dbTypeOfCar == incommingTypeOfCar ) {
+        res.status(422).json({ message: ' Type of Car is already exists with different id'});
+        return;
       } else {
-        return res.status(422).json({message: 'Validation failed, car is exists in database with different id'})
+        const updateTypeofCar = incommingTypeOfCar;
+        const carUpdate = new Car(updateTypeofCar);
+        await carUpdate.update(incommingId);
+        res.status(200).json({ message: 'Update successfull'})
+        return;
       }
     }
   } catch (error) {
-    res.status(500).json({message: 'There is an error during update'});
+    res.status(500).json({message: 'There is an error during insert'});
     return;
   }
 }

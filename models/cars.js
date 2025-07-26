@@ -6,28 +6,23 @@ module.exports = class Car {
         this.type_of_car = type_of_car
     }
     async save(){
-        return await db.execute('INSERT INTO my_mini_nodejs_app_db_github.cars (type_of_car) VALUES (?)',[this.type_of_car]);
+        return await db.execute('INSERT INTO cars (type_of_car) VALUES (?)',[this.type_of_car]);
     }
-    static async asyncFetchAllCars(){
-        const [row] = await db.query('SELECT type_of_car FROM my_mini_nodejs_app_db_github.cars');
-        return row.length > 0 ? row : 0;
+    static async FetchAllCars(){
+        const [row] = await db.query('SELECT * FROM cars');
+        return row.length > 0 ? row : null;
     }
-    static async asyncFindCarById(carId){
-        const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
-        return row.length > 0 ? row[0] : 0;
+    static async FindTypeOfCarById(carId){
+        const [row] = await db.query(' SELECT * FROM cars where idcars = ?',[carId])
+        return row.length > 0 ? row[0] : null;
     }
-    async asyncFindCarBytypeOfCar(car){
-        const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where type_of_car = ?',[car])
-        return row.length > 0 ? row[0] : 0;
-        
+    async update(carId){
+        return await db.execute('UPDATE cars SET type_of_car = ? where idcars = ?',[this.type_of_car,carId])
     }
-    async asyncFindCarById(carId){
-        const [row] = await db.query(' SELECT * FROM  my_mini_nodejs_app_db_github.cars where idcars = ?',[carId])
-        return row.length > 0 ? row[0] : 0;
-    }
-
-    
-    async asyncUpdateCarById(carId){
-            return await db.execute('UPDATE cars SET type_of_car = ? where idcars = ?',[this.type_of_car,carId])
+    // Validation functions
+    static async FindTypeOfCarByCar(car){
+        const [row] = await db.query(' SELECT * FROM cars where type_of_car = ?',[car])
+        return row.length > 0 ? row[0] : null;
     }
 };
+

@@ -41,6 +41,9 @@ exports.getUser = async (req,res,next) => {
         return;
     }
 }
+/*
+* Delete one user if id exists
+*/
 exports.deleteUserById = async (req,res,next) => {
     const userId = req.params.userId;
     try {
