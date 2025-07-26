@@ -21,3 +21,24 @@ exports.getUsers = async (req, res, next) => {
         return;
     }
 }
+/**
+ * Gets one users from the database if id exists.
+ */
+exports.getUser = async (req,res,next) => {
+    try{
+        const incommingId = req.params.userId;
+        const queryResult = await User.FindUserById(incommingId);
+        if(queryResult === null) {
+            return res.status(422).json({ message: 'There is no data with that id' });
+        } else {
+            res.status(200).json({
+                message: 'Query is success',
+                data: queryResult})
+            return;
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
+}
+

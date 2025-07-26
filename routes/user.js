@@ -9,11 +9,11 @@ const router = express.Router();
 //GET route is /user/users
 
 router.get('/users', userController.getUsers);
-/*
+
 // GET route is /user/1 for example
 
 router.get('/:userId',userController.getUser);
-
+/*
 //POST route for create a new user
 // Here validate an input data
 router.post('/user',[
