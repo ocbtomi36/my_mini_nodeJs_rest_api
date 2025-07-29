@@ -2,6 +2,8 @@ const express = require('express');
 
 const { body } = require('express-validator');
 
+const { validateUserInput } = require('../helper/helper')
+
 const userController = require('../controllers/users');
 
 const router = express.Router();
@@ -25,7 +27,7 @@ router.post('/user',[
     body('e_mail').trim().isEmail().normalizeEmail().withMessage("this field must be an valid e-mail format"),
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
 
-],userController.createUser);
+],validateUserInput,userController.createUser);
 
 // router.delete('/:userId', userController.deleteUserById);
 router.put('/:userId',[
@@ -36,6 +38,6 @@ router.put('/:userId',[
     body('date_of_birth').trim().isDate('YYYY-MM-DD').withMessage("this field does't match with 'YYYY-MM-DD' format"),
     body('e_mail').trim().isEmail().normalizeEmail().withMessage("this field must be an valid e-mail format"),
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
-],userController.updateUserById);
+],validateUserInput,userController.updateUserById);
 
 module.exports = router;
