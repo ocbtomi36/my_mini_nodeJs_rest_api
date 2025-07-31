@@ -50,7 +50,6 @@ exports.createCar = async(req,res,next) => {
 // update a car by id
 exports.updateCar = async (req,res,next) => {
   const incommingTypeOfCar = req.body.type_of_car;
-  //console.log(incommingTypeOfCar);
   try {
       const queryTypeOfCar = await Car.FindTypeOfCarByCar(incommingTypeOfCar);
       if(queryTypeOfCar === null){

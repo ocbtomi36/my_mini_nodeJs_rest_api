@@ -2,7 +2,7 @@ const express = require('express');
 
 const { body } = require('express-validator');
 
-const { validateUserInput } = require('../helper/helper')
+const { validateUserInput, isUserExistsById } = require('../helper/helper')
 
 const userController = require('../controllers/users');
 
@@ -14,12 +14,12 @@ router.get('/users', userController.getUsers);
 
 // GET route is /user/1 for example
 
-router.get('/:userId',userController.getUser);
+router.get('/:userId', isUserExistsById, userController.getUser);
 
 //POST route for create a new user
-// Here validate an input data
+
 router.post('/user',[
-    // check if string contains whitespaces and spec chars ?
+    // check if string contains whitespaces and spec chars ? to do
     body('first_name').trim().isLength({min:1,max:20}).withMessage('length of first name is incorrect'),
     body('last_name').trim().isLength({min:1,max:20}).withMessage('length of last name is incorrect'),
     body('date_of_birth').trim().isLength({min:10,max:10}).withMessage('length of date of birth is incorrect'), //database format must be date then i get back YYYY-MM-DD string
@@ -29,15 +29,15 @@ router.post('/user',[
 
 ],validateUserInput,userController.createUser);
 
-// router.delete('/:userId', userController.deleteUserById);
+router.delete('/:userId',isUserExistsById ,userController.deleteUser);
 router.put('/:userId',[
-    // check if string contains whitespaces and spec chars ?
+    // check if string contains whitespaces and spec chars ? to do
     body('first_name').trim().isLength({min:1,max:20}).withMessage('length of first name is incorrect'),
     body('last_name').trim().isLength({min:1,max:20}).withMessage('length of last name is incorrect'),
     body('date_of_birth').trim().isLength({min:10,max:10}).withMessage('length of date of birth is incorrect'), //database format must be date then i get back YYYY-MM-DD string
     body('date_of_birth').trim().isDate('YYYY-MM-DD').withMessage("this field does't match with 'YYYY-MM-DD' format"),
     body('e_mail').trim().isEmail().normalizeEmail().withMessage("this field must be an valid e-mail format"),
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
-],validateUserInput,userController.updateUserById);
+],validateUserInput,isUserExistsById,userController.updateUserById);
 
 module.exports = router;

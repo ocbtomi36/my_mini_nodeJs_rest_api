@@ -1,4 +1,4 @@
-const { validationResult } = require('express-validator');
+
 const User = require('../models/user');
 //const { post } = require('../routes/user');
 
@@ -26,16 +26,7 @@ exports.getUsers = async (req, res, next) => {
  */
 exports.getUser = async (req,res,next) => {
     try{
-        const incommingId = req.params.userId;
-        const queryResult = await User.FindUserById(incommingId);
-        if(queryResult === null) {
-            return res.status(422).json({ message: 'There is no data with that id' });
-        } else {
-            res.status(200).json({
-                message: 'Query is success',
-                data: queryResult})
-            return;
-        }
+            res.status(200).json({message: 'Query is success', data: req.user})
     } catch (error) {
         res.status(500).json({ message: 'An error occured'})
         return;
@@ -45,13 +36,6 @@ exports.getUser = async (req,res,next) => {
  * Create a user by incomming data
 */
 exports.createUser = async(req,res,next) => {
-    const errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        return res.status(422).json({message: 'Validation failed.',
-            errors: errors.array()
-        })
-    }
-    
     try {
         const first_name = req.body.first_name; 
         const last_name = req.body.last_name; 
@@ -77,65 +61,63 @@ exports.createUser = async(req,res,next) => {
     }
     
 } 
-// valamik káoszos
-exports.updateUserById = async (req,res,next) => {
-    const userId = req.params.userId;
-    const foundedUser = await User.FindUserById(userId);
-    if(foundedUser === null){
-        return res.status(422).json({ message: 'There is no data with that id' });
-    }
+/**
+ * Delete a user by id
+*/
+exports.deleteUser = async (req,res,next) => {
     try {
-        // bejövő adat validálás
-        const errors = validationResult(req);
-        if(!errors.isEmpty()) {
-            return res.status(422).json({message: 'Validation failed.',
-                errors: errors.array()
-            })
+        console.log(req.user.iduser)
+        const [ result ] = await User.DeleteUserById(req.user.iduser);
+        if(result.affectedRows === 0){
+            return res.status(404).json({ message: 'Delete failed - User not found anymore' });
         }
-        // betöltjük a bejövő adatokat
+        res.status(200).json({message: 'User delete successful'});
+    } catch (error) {
+        res.status(500).json({ message: 'There is an error during deleting'})
+    }
+}
+exports.updateUserById = async (req,res,next) => {
+    try {
+        const userId = req.user.iduser;
         const first_name = req.body.first_name; 
         const last_name = req.body.last_name; 
         const date_of_birth = req.body.date_of_birth; 
         const e_mail = req.body.e_mail; 
         const password = req.body.password;
-        // félreteszem innen. A logikát később
-        // Mikor valid egy adat, akkor amikor nem sérti a uniqe megszorítást!!!!!!!!
-        // Elsőnek nézzük meg a bejövő emailt, a logika az, hogy azt az esetet nézzük amikor elutasítok, mikor van ez ? amikor a bejövő adattal lekérdezek,
-        /*létezik e az adott e-mail */
-        const incommingEmalValidation = await User.EamilExistsByIncommingData(e_mail); // van mögötte id, // ha null ok
-        const incommingPasswordValidaton = await User.PasswordExistsByIncommingData(password); // van mögötte id // ha null ok
-        if(incommingEmalValidation !== null){
-            // akkor létezik ez és kéne a hozzá tartozó id, ha ez megeggyezik a bejövő id-val ok ha nem elutasít
-            const e_mailId = incommingEmalValidation.iduser;
-            if(e_mailId != userId){
-                return res.status(422).json({ message: 'Email is alerady exists with different id' });
+        const incommingEmailValidation = await User.EamilExistsByIncommingData(e_mail); 
+        const incommingPasswordValidaton = await User.PasswordExistsByIncommingData(password);
+        if (incommingEmailValidation == null && incommingPasswordValidaton == null) {
+            console.log('egyik sincs benne, lehet beszúrni')
+            const userUpdate = new User(first_name,last_name,date_of_birth,e_mail,password);
+            await userUpdate.updateUserById(userId);
+            res.status(200).json({message: 'User update successful'});
+        } else if(incommingEmailValidation != null && incommingPasswordValidaton != null){ 
+            if(incommingEmailValidation.iduser == userId && incommingPasswordValidaton.iduser == userId){
+                const userUpdate = new User(first_name,last_name,date_of_birth,e_mail,password);
+                await userUpdate.updateUserById(userId);
+                res.status(200).json({message: 'User update successful'});
+            } else {
+                res.status(422).json({message: " Email or password already exists by an other user."});
             }
-        }
-        if(incommingPasswordValidaton !== null){
-            const passwdId = incommingPasswordValidaton.iduser;
-            console.log(passwdId)
-            if(passwdId != userId) {
-                return res.status(422).json({ message: 'Password is alerady exists with different id' });
+        } else if(incommingEmailValidation == null && incommingPasswordValidaton != null){
+            if(incommingPasswordValidaton.iduser == userId){
+                const userUpdate = new User(first_name,last_name,date_of_birth,e_mail,password);
+                await userUpdate.updateUserById(userId);
+                res.status(200).json({message: 'User update successful'});
+            } else {
+                res.status(422).json({message: "Password already exists by an other user."});
             }
-        }
-        if('bela'){
-        const updatingUser = new User(first_name,last_name,date_of_birth,e_mail,password);
-        await updatingUser.updateUserById(userId);
-        res.status(201).json({
-                    message: 'User is Updated'})
-        } else {
-        if(incommingEmalValidation == null && incommingPasswordValidaton == null){
-            const updatingUser = new User(first_name,last_name,date_of_birth,e_mail,password);
-            await updatingUser.updateUserById(userId);
-            res.status(201).json({
-                    message: 'User is Updated'})
-        }
-    }
+        } else if(incommingEmailValidation != null && incommingPasswordValidaton == null){
+            if(incommingEmailValidation.iduser == userId){
+                const userUpdate = new User(first_name,last_name,date_of_birth,e_mail,password);
+                await userUpdate.updateUserById(userId);
+                res.status(200).json({message: 'User update successful'});
+            } else {
+                res.status(422).json({message: "Email already exists by an other user."});
+            }
+        } 
     } catch {
-        res.status(500).json({ message: 'An error occured'})
+        res.status(500).json({ message: 'An error occured Ok'})
         return;
     }
-
-    // hacker rank
 }
-

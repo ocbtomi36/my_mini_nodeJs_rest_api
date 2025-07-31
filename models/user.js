@@ -39,7 +39,7 @@ module.exports = class User {
      */
     static async EamilExistsByIncommingData(incommingEmail) {
         
-        const [row] = await db.query('SELECT * FROM users where e_mail = ?', [incommingEmail]);
+        const [row] = await db.query('SELECT iduser, e_mail FROM users where e_mail = ?', [incommingEmail]);
         return row.length > 0 ? row[0] : null;
     }
     /**
@@ -47,7 +47,7 @@ module.exports = class User {
      */
     static async PasswordExistsByIncommingData(incommingPassword) {
         
-        const [row] = await db.query('SELECT * FROM users where password = ?', [incommingPassword]);
+        const [row] = await db.query('SELECT iduser, password FROM users where password = ?', [incommingPassword]);
         return row.length > 0 ? row[0] : null;
     }
 };

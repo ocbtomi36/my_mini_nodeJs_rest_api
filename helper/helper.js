@@ -19,7 +19,7 @@ const isCarExistsById = async(req, res, next) => {
         const car = await Car.FindTypeOfCarById(carId);
         if(car === null){
         
-            res.status(404).json({ message: ' There is no data with that id'})
+            res.status(404).json({ message: ' There is no car data with that id'})
             return;
         } 
         req.car = car;
@@ -29,8 +29,21 @@ const isCarExistsById = async(req, res, next) => {
         return;
     }
 }
-const isUserExistsById = (req, res, next) => {
-    
+const isUserExistsById = async(req, res, next) => {
+    const userId = req.params.userId;
+    try {
+        const user = await User.FindUserById(userId);
+        if(user === null){
+        
+            res.status(404).json({ message: ' There is no user data with that id'})
+            return;
+        } 
+        req.user = user;
+        next();
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
 }
 module.exports = {
     validateUserInput,
