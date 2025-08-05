@@ -2,7 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const userRoutes = require('./routes/user');
-const carRoutes = require('./routes/car')
+const carRoutes = require('./routes/car');
+const authRoutes = require('./routes/auth')
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use((req,res,next) => {
 
 app.use('/user',userRoutes);
 app.use('/car',carRoutes);
+app.use('/auth',authRoutes); 
 
 /*
 opcionális
