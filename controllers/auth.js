@@ -29,6 +29,7 @@ exports.signup = async(req,res,next) => {
         
 }
 exports.login = async(req,res,next) => {
+    console.log('Itt az auth.js-ben')
     const e_mail = req.body.e_mail; 
     const password = req.body.password;
     let loadedEmailPassword;

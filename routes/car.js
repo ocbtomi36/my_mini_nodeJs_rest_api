@@ -9,15 +9,17 @@ const carController = require('../controllers/cars');
 
 const router = express.Router();
 
+const isAuth = require('../middleware/is-auth');
 
-router.get('/cars',carController.getCars);
 
-router.get('/:carId',isCarExistsById,carController.getCar);
+router.get('/cars',isAuth,carController.getCars);
 
-router.post('/car',[body('type_of_car').trim().isLength({min:1,max:45}).withMessage('length of type of car is incorrect')],validateUserInput,carController.createCar);
+router.get('/:carId',isAuth,isCarExistsById,carController.getCar);
 
-router.put('/:carId',[body('type_of_car').trim().isLength({min:1,max:45}).withMessage('length of type of car is incorrect')],validateUserInput,isCarExistsById,carController.updateCar);
+router.post('/car',isAuth,[body('type_of_car').trim().isLength({min:1,max:45}).withMessage('length of type of car is incorrect')],validateUserInput,carController.createCar);
 
-router.delete('/:carId',isCarExistsById,carController.deleteCarById);
+router.put('/:carId',isAuth,[body('type_of_car').trim().isLength({min:1,max:45}).withMessage('length of type of car is incorrect')],validateUserInput,isCarExistsById,carController.updateCar);
+
+router.delete('/:carId',isAuth,isCarExistsById,carController.deleteCarById);
 
 module.exports = router

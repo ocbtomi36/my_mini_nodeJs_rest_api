@@ -19,6 +19,7 @@ router.post('/signup', [
     body('password').trim().isLength({min:1,max:45}).withMessage('length of last name is incorrect')
 
 ],validateUserInput,authController.signup);
+
 router.post('/login',authController.login);
 
 module.exports = router;

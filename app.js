@@ -11,7 +11,7 @@ app.use(bodyParser.json()); // this is for application/json
 
 app.use((req,res,next) => {
     res.setHeader('Access-Controll-Allow-Origin', '*');
-    res.setHeader('Access-Controll-Allow-Methods', 'GET ,POST , PUT , PATCH , DELETE');
+    res.setHeader('Access-Controll-Allow-Methods', 'OPTIONS ,GET ,POST , PUT , PATCH , DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next()
 })
@@ -19,6 +19,13 @@ app.use((req,res,next) => {
 app.use('/user',userRoutes);
 app.use('/car',carRoutes);
 app.use('/auth',authRoutes); 
+
+app.use((error, req,res,next) => {
+    const status = error.statusCode || 500;
+    const message = error.message;
+    const data = error.data;
+    res.status(status).json({message: message, data: data})
+});
 
 /*
 opcionális
@@ -28,3 +35,5 @@ let formatedDate = datum + ' ' + time
 console.log(formatedDate);
 */
 app.listen(3000);
+
+// 393 for get side
