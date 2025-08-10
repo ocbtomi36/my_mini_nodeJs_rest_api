@@ -10,5 +10,5 @@ const isAuth = require('../middleware/is-auth');
 
 
 router.get('/transactions',isAuth,transactionsController.getAllTransactions);
-router.get('/:transactionId',isTransactionExistsById,transactionsController.getOneTransaction);
+router.get('/:transactionId',isAuth,isTransactionExistsById,transactionsController.getOneTransaction);
 module.exports = router;
