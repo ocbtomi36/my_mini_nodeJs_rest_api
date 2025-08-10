@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const userRoutes = require('./routes/user');
 const carRoutes = require('./routes/car');
 const authRoutes = require('./routes/auth');
-const transactionRoutes = require('./routes/transactions')
+const transactionRoutes = require('./routes/transactions');
 
 const app = express();
 
@@ -20,7 +20,8 @@ app.use((req,res,next) => {
 app.use('/user',userRoutes);
 app.use('/car',carRoutes);
 app.use('/auth',authRoutes); 
-app.use('/transactions',transactionRoutes);
+app.use('/transaction',transactionRoutes);
+
 
 app.use((error, req,res,next) => {
     const status = error.statusCode || 500;

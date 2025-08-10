@@ -24,7 +24,11 @@ exports.getCars = async (req, res, next) => {
  * Gets one car by the existing id, ready
  */
 exports.getCar = async (req,res,next) => {
+  try{
     res.status(200).json(req.car);
+  } catch(error){
+    res.status(500).json({ message: 'An error occures'})
+  }
 }
 /**
  * Create a new car 

@@ -2,6 +2,7 @@ const { validationResult } = require('express-validator');
 
 const Car = require('../models/cars');
 const User = require('../models/user');
+const Transaction = require('../models/transactions')
 
 const validateUserInput = (req, res, next) => {
     const errors = validationResult(req);
@@ -45,8 +46,29 @@ const isUserExistsById = async(req, res, next) => {
         return;
     }
 }
+
+const isTransactionExistsById = async(req, res, next) => {
+    const transactionId = req.params.transactionId;
+    console.log(transactionId);
+    try {
+        const transaction = await Transaction.FindTransactionById(transactionId);
+        console.log(transaction)
+        if(transaction === null){
+        
+            res.status(404).json({ message: ' There is no transaction data with that id'})
+            return;
+        } 
+        req.transaction = transaction;
+        next();
+    } catch (error) {
+        res.status(500).json({ message: 'An error occured'})
+        return;
+    }
+}
+
 module.exports = {
     validateUserInput,
     isCarExistsById,
-    isUserExistsById
+    isUserExistsById,
+    isTransactionExistsById
 };
